@@ -3,8 +3,10 @@ import axios from 'axios';
 const API_BASE_URL = 'http://localhost:5000/api'; // URL вашего бэкенда
 
 // Получить все товары
-export const getProducts = async () => {
-  const response = await axios.get(`${API_BASE_URL}/products`);
+export const getProducts = async (search: string = '') => {
+  const response = await axios.get(`${API_BASE_URL}/products`, {
+    params: { search },
+  });
   return response.data;
 };
 
@@ -26,3 +28,4 @@ export const getProductById = async (id: string) => {
     });
     return response.data;
   };
+  
