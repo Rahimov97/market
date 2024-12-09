@@ -101,7 +101,7 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
   // Создать новый товар
   export const createProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { name, price, description, category, stock, sellerId } = req.body;
+      const { name, description, category, price, sellerId, stock } = req.body;
   
       if (!name || !category) {
         res.status(400);
@@ -112,10 +112,10 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
         name,
         description,
         category,
+        image: req.file ? `/uploads/${req.file.filename}` : undefined, // Сохраняем путь к изображению
         offers: [],
       };
   
-      // Если предоставлен sellerId, добавляем предложение
       if (sellerId && price) {
         newProductData.offers.push({ seller: sellerId, price, stock });
       }
@@ -128,29 +128,30 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
     }
   };
   
-// Обновить товар
-export const updateProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const { id } = req.params;
-    const { name, description, category } = req.body;
-
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
-      { name, description, category },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedProduct) {
-      res.status(404).json({ message: 'Product not found' });
-      return;
+  export const updateProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { id } = req.params;
+      const { name, description, category } = req.body;
+  
+      const updateData: any = { name, description, category };
+  
+      if (req.file) {
+        updateData.image = `/uploads/${req.file.filename}`;
+      }
+  
+      const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+  
+      if (!updatedProduct) {
+        res.status(404);
+        throw new Error('Product not found.');
+      }
+  
+      res.json(updatedProduct);
+    } catch (error) {
+      next(error);
     }
-
-    res.json(updatedProduct);
-  } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
-  }
-};
-
+  };
+  
 // Удалить товар
 export const deleteProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {

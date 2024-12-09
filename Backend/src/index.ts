@@ -5,6 +5,7 @@ import connectDB from './config/db';
 import productRoutes from './routes/productRoutes';
 import sellerRoutes from './routes/sellerRoutes';
 import { errorHandler, notFound } from './middleware/errorMiddleware';
+import path from 'path';
 
 // Загрузка переменных окружения
 dotenv.config();
@@ -21,6 +22,7 @@ app.use(cors());
 // Роуты
 app.use('/api/products', productRoutes);
 app.use('/api/sellers', sellerRoutes);
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Базовый роут
 app.get('/', (req, res) => {

@@ -19,3 +19,10 @@ export const getProductById = async (id: string) => {
     const response = await axios.get(`${API_BASE_URL}/products/${id}`);
     return response.data;
   };
+
+  export const uploadProduct = async (data: FormData) => {
+    const response = await axios.post(`${API_BASE_URL}/products`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  };
