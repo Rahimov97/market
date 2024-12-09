@@ -1,39 +1,41 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { getProducts } from '../services/api';
 import { Box, Grid, Typography } from '@mui/material';
 import ProductCard from '../components/ProductCard';
 
-const ProductList: React.FC = () => {
+const SearchResults: React.FC = () => {
   const [products, setProducts] = useState<any[]>([]);
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('query') || '';
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchSearchResults = async () => {
       try {
-        const data = await getProducts(); // Вызываем без параметров
+        const data = await getProducts(query);
         setProducts(data);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Error fetching search results:', error);
       }
     };
 
-    fetchProducts();
-  }, []);
+    fetchSearchResults();
+  }, [query]);
 
   return (
     <Box
       sx={{
-        backgroundColor: '#ffffff', // Глобальный белый фон
-        minHeight: '100vh', // Занимает всю высоту экрана
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'start',
+        backgroundColor: '#ffffff',
+        minHeight: '100vh',
         padding: 4,
       }}
     >
-
+      <Typography variant="h4" gutterBottom>
+        Результаты поиска: "{query}"
+      </Typography>
       <Grid container spacing={2}>
         {products.map((product) => (
-          <Grid item xs={12} sm={6} md={4} lg={2} key={product._id}>
+          <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
             <ProductCard
               name={product.name}
               price={product.offers[0]?.price || 0}
@@ -46,4 +48,4 @@ const ProductList: React.FC = () => {
   );
 };
 
-export default ProductList;
+export default SearchResults;

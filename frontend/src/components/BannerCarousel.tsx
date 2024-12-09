@@ -42,7 +42,6 @@ const BannerCarousel: React.FC = () => {
       alignItems="center"
       justifyContent="center"
       overflow="hidden"
-      bgcolor="white"
     >
       {/* Центральный баннер */}
       <Box

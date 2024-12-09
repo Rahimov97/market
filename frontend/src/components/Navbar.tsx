@@ -12,14 +12,20 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import { useNavigate } from 'react-router-dom';
 
-const Navbar: React.FC<{ onSearch: (query: string) => void }> = ({ onSearch }) => {
+const Navbar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const navigate = useNavigate();
 
   const handleSearch = () => {
     if (searchTerm.trim()) {
-      onSearch(searchTerm.trim());
+      navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
     }
+  };
+
+  const handleLogoClick = () => {
+    navigate('/'); // Перенаправляет на главную страницу
   };
 
   return (
@@ -40,7 +46,14 @@ const Navbar: React.FC<{ onSearch: (query: string) => void }> = ({ onSearch }) =
           padding: '0 16px',
         }}
       >
-        <Box display="flex" alignItems="center" gap={2}>
+        {/* Логотип */}
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={2}
+          sx={{ cursor: 'pointer' }}
+          onClick={handleLogoClick} // Добавляем обработчик клика
+        >
           <img
             src="https://via.placeholder.com/40"
             alt="Logo"

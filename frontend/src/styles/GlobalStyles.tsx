@@ -13,9 +13,16 @@ const theme = createTheme({
     background: {
       default: '#ffffff', // Глобальный фон
     },
+    text: {
+      primary: '#000000', // Устанавливаем черный цвет текста по умолчанию
+      secondary: '#6c757d', // Серый цвет для вспомогательного текста
+    },
   },
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
+    allVariants: {
+      color: '#000000', // Глобально устанавливаем черный цвет текста
+    },
   },
   components: {
     MuiCssBaseline: {
@@ -27,6 +34,7 @@ const theme = createTheme({
           minHeight: '100vh', // Гарантируем, что страница занимает весь экран
           display: 'flex',
           flexDirection: 'column',
+          color: '#000000', // Устанавливаем черный цвет текста
         },
         '#root': {
           minHeight: '100vh', // Убедитесь, что root занимает всю высоту экрана
