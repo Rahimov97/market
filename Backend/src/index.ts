@@ -22,7 +22,7 @@ app.use(cors());
 // Роуты
 app.use('/api/products', productRoutes);
 app.use('/api/sellers', sellerRoutes);
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Базовый роут
 app.get('/', (req, res) => {

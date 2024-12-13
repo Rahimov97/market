@@ -1,14 +1,17 @@
 import multer from 'multer';
 import path from 'path';
 
+// Устанавливаем путь для сохранения файлов
+const uploadPath = path.join(__dirname, '../uploads');
+
 // Конфигурация для хранения файлов
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Папка для сохранения файлов
+    cb(null, uploadPath); // Папка для сохранения
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, `${uniqueSuffix}-${file.originalname}`);
+    const uniqueSuffix = Date.now() + '-' + file.originalname;
+    cb(null, uniqueSuffix);
   },
 });
 
@@ -25,10 +28,10 @@ const fileFilter = (req: any, file: any, cb: any) => {
   }
 };
 
-// Настройка multer
+// Экспорт настроенного multer
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 }, // Лимит 5MB
   fileFilter,
 });
 

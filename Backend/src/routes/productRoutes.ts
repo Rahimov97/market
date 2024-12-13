@@ -1,5 +1,5 @@
 import express from 'express';
-import multer from 'multer';
+import upload from '../middleware/uploadMiddleware'; // Импортируем настроенный uploadMiddleware
 import {
   getProducts,
   getProductById,
@@ -10,23 +10,13 @@ import {
   addSellerToProduct,
 } from '../controllers/productController';
 
-// Настройка `multer`
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-const upload = multer({ storage });
-
 const router = express.Router();
 
+// Роуты
 router.get('/', getProducts);
 router.get('/:id', getProductById);
-router.post('/', upload.single('image'), createProduct);
-router.put('/:id', upload.single('image'), updateProduct);
+router.post('/', upload.single('image'), createProduct); // Загрузка файла и создание товара
+router.put('/:id', upload.single('image'), updateProduct); // Загрузка файла и обновление товара
 router.delete('/:id', deleteProduct);
 router.post('/:id/offers', addOfferToProduct);
 router.post('/:id/sellers', addSellerToProduct);

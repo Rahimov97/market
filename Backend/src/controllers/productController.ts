@@ -113,12 +113,15 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
         name,
         description,
         category,
-        image: req.file ? `/uploads/${req.file.filename}` : undefined, // Сохраняем путь к изображению
+        image: req.file ? `/uploads/${req.file.filename}` : undefined,
         offers: [],
       };
   
+      // Добавляем в `offers` только если `sellerId` и `price` присутствуют
       if (sellerId && price) {
-        newProductData.offers.push({ seller: sellerId, price, stock });
+        newProductData.offers.push({ seller: sellerId, price: parseFloat(price), stock: stock || 0 });
+      } else {
+        delete newProductData.offers; // Удаляем пустой массив
       }
   
       const newProduct = new Product(newProductData);

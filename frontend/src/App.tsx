@@ -1,10 +1,10 @@
 import React from 'react';
-import GlobalStyles from './styles/GlobalStyles';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import BannerCarousel from './components/BannerCarousel';
 import ProductList from './pages/ProductList';
 import SearchResults from './pages/SearchResults';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AdminPanel from './pages/AdminPanel';
 
 const App: React.FC = () => {
   return (
@@ -16,6 +16,7 @@ const App: React.FC = () => {
           <ProductList />
         </>} />
         <Route path="/search" element={<SearchResults />} />
+        <Route path="/admin" element={<AdminPanel />} /> {/* Маршрут для админки */}
       </Routes>
     </Router>
   );

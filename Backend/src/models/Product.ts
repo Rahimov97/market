@@ -20,7 +20,7 @@ const productSchema = new Schema<IProduct>(
     image: { type: String }, // Добавлено поле для URL изображения
     offers: [
       {
-        seller: { type: mongoose.Schema.Types.ObjectId, ref: 'Seller', required: true },
+        seller: { type: mongoose.Schema.Types.ObjectId, ref: 'Seller', required: false },
         price: { type: Number, required: true },
         stock: { type: Number, default: 0 },
       },

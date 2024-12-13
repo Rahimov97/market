@@ -23,9 +23,19 @@ export const getProductById = async (id: string) => {
   };
 
   export const uploadProduct = async (data: FormData) => {
-    const response = await axios.post(`${API_BASE_URL}/products`, data, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    try {
+      const response = await axios.post(`${API_BASE_URL}/products`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error uploading product:', error);
+      throw error;
+    }
+  };
+  
+  export const deleteProduct = async (id: string) => {
+    const response = await axios.delete(`${API_BASE_URL}/products/${id}`);
     return response.data;
   };
   
