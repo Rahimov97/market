@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getProductById } from '../services/api';
+import { getProductById } from './services/api';
 import { Box, CircularProgress, Typography } from '@mui/material';
 
 const ProductDetails: React.FC = () => {

@@ -4,7 +4,9 @@ import cors from 'cors';
 import connectDB from './config/db';
 import productRoutes from './routes/productRoutes';
 import sellerRoutes from './routes/sellerRoutes';
+import authRoutes from './routes/authRoutes'; 
 import { errorHandler, notFound } from './middleware/errorMiddleware';
+import bodyParser from 'body-parser';
 import path from 'path';
 
 // Загрузка переменных окружения
@@ -17,22 +19,24 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(cors());
 
 // Роуты
 app.use('/api/products', productRoutes);
 app.use('/api/sellers', sellerRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api/auth', authRoutes); 
 
 // Базовый роут
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-// Подключение обработчика для несуществующих маршрутов
+// Обработчик для несуществующих маршрутов
 app.use(notFound);
 
-// Подключение обработчика ошибок
+// Обработчик ошибок
 app.use(errorHandler);
 
 // Запуск сервера
