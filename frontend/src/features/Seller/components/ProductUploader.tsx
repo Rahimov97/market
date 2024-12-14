@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, IconButton, Dialog, TextField } from '@mui/material';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { uploadProduct } from '../services/api';
+import { uploadProduct } from "@/services/api";
 
 const ProductUploader: React.FC = () => {
   const [open, setOpen] = useState(false);

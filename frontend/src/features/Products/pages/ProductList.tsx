@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { getProducts } from '../services/api';
 import { Box, Grid, Typography } from '@mui/material';
-import ProductCard from '../components/Product/ProductCard';
+import { getProducts } from "@/services/api";
+import ProductCard from "@/features/Products/components/ProductCard";
+
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<any[]>([]);

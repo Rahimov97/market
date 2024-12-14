@@ -7,11 +7,15 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "Node",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
+
+    /* Типы Node.js */
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true, // Добавлено для поддержки импорта по умолчанию
 
     /* Linting */
     "strict": true,
