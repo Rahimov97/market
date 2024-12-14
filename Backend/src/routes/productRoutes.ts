@@ -1,24 +1,18 @@
-import express from 'express';
-import upload from '../middleware/uploadMiddleware'; // Импортируем настроенный uploadMiddleware
+import express from "express";
 import {
-  getProducts,
-  getProductById,
   createProduct,
   updateProduct,
   deleteProduct,
-  addOfferToProduct,
-  addSellerToProduct,
-} from '../controllers/productController';
+  getProductById,
+  getProducts,
+} from "../controllers/products";
 
 const router = express.Router();
 
-// Роуты
-router.get('/', getProducts);
-router.get('/:id', getProductById);
-router.post('/', upload.single('image'), createProduct); // Загрузка файла и создание товара
-router.put('/:id', upload.single('image'), updateProduct); // Загрузка файла и обновление товара
-router.delete('/:id', deleteProduct);
-router.post('/:id/offers', addOfferToProduct);
-router.post('/:id/sellers', addSellerToProduct);
+router.get("/", getProducts);
+router.get("/:id", getProductById);
+router.post("/", createProduct);
+router.put("/:id", updateProduct);
+router.delete("/:id", deleteProduct);
 
 export default router;

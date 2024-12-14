@@ -2,7 +2,7 @@ import multer from 'multer';
 import path from 'path';
 
 // Устанавливаем путь для сохранения файлов
-const uploadPath = path.join(__dirname, '../uploads');
+const uploadPath = path.join(__dirname, '../../uploads');
 
 // Конфигурация для хранения файлов
 const storage = multer.diskStorage({
@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
     cb(null, uploadPath); // Папка для сохранения
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + file.originalname;
+    const uniqueSuffix = `${Date.now()}-${file.originalname}`;
     cb(null, uniqueSuffix);
   },
 });

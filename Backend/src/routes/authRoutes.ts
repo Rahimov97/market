@@ -5,22 +5,16 @@ import { authMiddleware, checkRole, CustomRequest } from '../middleware/authMidd
 const router = express.Router();
 
 // Регистрация
-router.post('/register', async (req: CustomRequest, res) => {
-  await registerUser(req, res);
-});
+router.post('/register', registerUser);
 
 // Авторизация
-router.post('/login', async (req: CustomRequest, res) => {
-  await loginUser(req, res);
-});
+router.post('/login', loginUser);
 
 // Профиль пользователя
-router.get('/profile', authMiddleware, async (req: CustomRequest, res) => {
-  await getProfile(req, res);
-});
+router.get('/profile', authMiddleware, getProfile);
 
 // Пример защищенного маршрута
-router.get('/admin', authMiddleware, checkRole(['admin']), async (req: CustomRequest, res) => {
+router.get('/admin', authMiddleware, checkRole(['admin']), (req: CustomRequest, res) => {
   res.json({ message: `Welcome, admin! User ID: ${req.user?.id}` });
 });
 

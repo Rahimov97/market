@@ -1,13 +1,14 @@
-import { Request as ExpressRequest, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-// Интерфейс для свойства user
+// Интерфейс для декодированного токена
 export interface DecodedToken {
   id: string;
   role: string;
 }
 
-export interface CustomRequest extends ExpressRequest {
+// Расширенный интерфейс для объекта Request
+export interface CustomRequest extends Request {
   user?: {
     id: string;
     role: string;
@@ -38,7 +39,7 @@ export const authMiddleware = (
 
     next();
   } catch (error) {
-    res.status(400).json({ message: 'Invalid token.' });
+    res.status(401).json({ message: 'Invalid token.' });
   }
 };
 
