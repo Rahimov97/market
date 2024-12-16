@@ -10,6 +10,7 @@ import sellerRoutes from './routes/sellerRoutes';
 import authRoutes from './routes/authRoutes';
 import { errorHandler, notFound } from './middleware/errorMiddleware';
 import uploadRoutes from './routes/uploadRoutes';
+import userRoutes from "./routes/userRoutes";
 
 dotenv.config();
 
@@ -21,16 +22,22 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use('/api/products', productRoutes);
 app.use('/api/sellers', sellerRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/uploads', uploadRoutes);
+app.use("/api/users", userRoutes);
+
 
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
+
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET is not defined in the environment variables.");
+}
 
 app.use(notFound);
 

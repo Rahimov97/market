@@ -9,4 +9,13 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"), // Настраиваем алиас @ для папки src
     },
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:5000", // URL вашего бэкенд-сервера
+        changeOrigin: true,             // Изменяет заголовок Origin в запросах
+        secure: false,                  // Отключаем проверку SSL, если API использует HTTP
+      },
+    },
+  },
 });

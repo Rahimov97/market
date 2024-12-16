@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Grid, IconButton, Typography, Link } from "@mui/material";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import MailOutlineIcon from "@mui/icons-material/MailOutline"; // Для обратной связи
 
 // Типы для ссылок
 type LinkItem = string | { icon: React.ReactNode; link: string };
@@ -11,11 +10,23 @@ type LinkItem = string | { icon: React.ReactNode; link: string };
 const links: { title: string; items: LinkItem[] }[] = [
   {
     title: "Покупателям",
-    items: ["Как выбрать товар", "Оплата и доставка", "Обратная связь", "Покупайте как юрлицо", "О сервисе", "Возвраты"],
+    items: [
+      "Как выбрать товар", 
+      "Оплата и доставка", 
+      "Обратная связь", 
+      "Покупайте как юрлицо", 
+      "О сервисе", 
+      "Возвраты"
+    ],
   },
   {
     title: "Продавцам",
-    items: ["Личный кабинет продавца", "Продавайте на Маркете", "Документация для партнёров", "Сайт для партнёров"],
+    items: [
+      "Личный кабинет продавца", 
+      "Продавайте на Маркете", 
+      "Документация для партнёров", 
+      "Сайт для партнёров"
+    ],
   },
   {
     title: "Сотрудничество",
@@ -24,8 +35,6 @@ const links: { title: string; items: LinkItem[] }[] = [
       "Партнёрская программа",
       "Программа для блогеров",
       "Производителям",
-      "Пункт выдачи заказов",
-      "Маркет нанимает",
     ],
   },
   {
@@ -33,7 +42,6 @@ const links: { title: string; items: LinkItem[] }[] = [
     items: [
       { icon: <TelegramIcon sx={{ fontSize: 24 }} />, link: "https://t.me/" },
       { icon: <WhatsAppIcon sx={{ fontSize: 24 }} />, link: "https://wa.me/" },
-      { icon: <MailOutlineIcon sx={{ fontSize: 24 }} />, link: "mailto:support@example.com" },
     ],
   },
 ];

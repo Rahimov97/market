@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, Toolbar, Box, Typography } from "@mui/material";
+import { AppBar, Toolbar, Box, Typography, Button } from "@mui/material";
 import Logo from "./components/Logo";
 import CategoryMenu from "./components/CategoryMenu";
 import SearchBar from "./components/SearchBar";
@@ -7,10 +7,12 @@ import OrdersIcon from "./components/Icons/OrdersIcon";
 import FavoritesIcon from "./components/Icons/FavoritesIcon";
 import CartIcon from "./components/Icons/CartIcon";
 import ProfileIcon from "./components/Icons/ProfileIcon";
+import { useAuthContext } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Header: React.FC = () => {
-  const isAuthenticated = false; // Здесь определяется, вошел пользователь или нет (заглушка)
-  const userPhotoUrl = "https://via.placeholder.com/40"; // Заглушка для фото пользователя
+  const { isAuthenticated } = useAuthContext();
+  const navigate = useNavigate();
 
   const icons = [
     { icon: <OrdersIcon />, label: "Заказы" },
@@ -38,10 +40,12 @@ const Header: React.FC = () => {
         }}
       >
         <Logo />
+
         <Box sx={{ display: "flex", alignItems: "center", flex: 1, justifyContent: "center", gap: 2 }}>
           <CategoryMenu />
           <SearchBar />
         </Box>
+
         <Box display="flex" alignItems="center" gap={3}>
           {icons.map(({ icon, label }, index) => (
             <Box key={index} display="flex" flexDirection="column" alignItems="center">
@@ -51,7 +55,28 @@ const Header: React.FC = () => {
               </Typography>
             </Box>
           ))}
-          <ProfileIcon isAuthenticated={isAuthenticated} userPhotoUrl={userPhotoUrl} />
+
+          {isAuthenticated ? (
+            <ProfileIcon />
+          ) : (
+            <Button
+  variant="contained"
+  onClick={() => {
+    if (!isAuthenticated) {
+      navigate("/auth", { replace: true });
+    }
+  }}
+  sx={{
+    backgroundColor: "#007BFF",
+    color: "#fff",
+    textTransform: "none",
+    "&:hover": { backgroundColor: "#0056b3" },
+  }}
+>
+  Войти
+</Button>
+
+          )}
         </Box>
       </Toolbar>
     </AppBar>

@@ -7,18 +7,18 @@ interface AuthFormProps {
   password: string;
   name?: string;
   onChange: (field: string, value: string) => void;
-  onSubmit: () => void;
+  onSubmit: (e: React.FormEvent) => void; // Изменено для принятия события формы
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ isLogin, phone, password, name, onChange, onSubmit }) => {
   return (
-    <Box>
+    <Box component="form" onSubmit={onSubmit}>
       {/* Поле ввода имени для регистрации */}
       {!isLogin && (
         <TextField
           placeholder="Имя"
-          value={name}
-          onChange={(e) => onChange("name", e.target.value)}
+          value={name || ""}
+          onChange={(e) => onChange("firstName", e.target.value)}
           fullWidth
           margin="normal"
           InputProps={{
@@ -39,6 +39,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, phone, password, name, onC
         onChange={(e) => onChange("phone", e.target.value)}
         fullWidth
         margin="normal"
+        autoComplete="tel" // Подсказка браузеру для автозаполнения телефона
         InputProps={{
           sx: {
             height: "50px",
@@ -57,6 +58,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, phone, password, name, onC
         onChange={(e) => onChange("password", e.target.value)}
         fullWidth
         margin="normal"
+        autoComplete="current-password" // Рекомендуемый атрибут
         InputProps={{
           sx: {
             height: "50px",
@@ -70,7 +72,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, phone, password, name, onC
       {/* Кнопка Войти/Зарегистрироваться */}
       <Button
         fullWidth
-        onClick={onSubmit}
+        type="submit" // Используем "submit" для отправки формы
         sx={{
           height: "50px",
           borderRadius: "25px",

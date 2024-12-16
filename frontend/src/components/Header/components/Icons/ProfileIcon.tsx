@@ -1,62 +1,199 @@
-import React from "react";
-import { Box, Button, Avatar } from "@mui/material";
+import React, { useEffect, useState, useCallback } from "react";
+import {
+  Box,
+  Avatar,
+  Menu,
+  MenuItem,
+  Typography,
+  Divider,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "@/context/AuthContext";
 
-interface ProfileIconProps {
-  isAuthenticated: boolean;
-  userPhotoUrl?: string; // Ссылка на фото пользователя (если есть)
-}
+import {
+  InventoryOutlined as InventoryOutlinedIcon,
+  ShoppingBagOutlined as ShoppingBagOutlinedIcon,
+  KeyboardReturnOutlined as KeyboardReturnOutlinedIcon,
+  FavoriteBorderOutlined as FavoriteBorderOutlinedIcon,
+  CommentOutlined as CommentOutlinedIcon,
+  LocalOfferOutlined as LocalOfferOutlinedIcon,
+  CompareOutlined as CompareOutlinedIcon,
+  BusinessCenterOutlined as BusinessCenterOutlinedIcon,
+  StoreMallDirectoryOutlined as StoreMallDirectoryOutlinedIcon,
+  SupportAgentOutlined as SupportAgentOutlinedIcon,
+  SettingsOutlined as SettingsOutlinedIcon,
+  HelpOutlineOutlined as HelpOutlineOutlinedIcon,
+  LogoutOutlined as LogoutOutlinedIcon
+} from "@mui/icons-material";
 
-const ProfileIcon: React.FC<ProfileIconProps> = ({
-  isAuthenticated,
-  userPhotoUrl = "https://via.placeholder.com/40", // Заглушка
-}) => {
+const DEFAULT_AVATAR_URL = "https://via.placeholder.com/40";
+
+const USER_MENU_ITEMS = [
+  { icon: <InventoryOutlinedIcon />, label: "Заказы" },
+  { icon: <ShoppingBagOutlinedIcon />, label: "Купленные товары" },
+  { icon: <KeyboardReturnOutlinedIcon />, label: "Возвраты" },
+  { icon: <FavoriteBorderOutlinedIcon />, label: "Избранное" },
+  { icon: <CommentOutlinedIcon />, label: "Мои отзывы и вопросы" },
+  { icon: <LocalOfferOutlinedIcon />, label: "Промокоды" },
+  { icon: <CompareOutlinedIcon />, label: "Сравнение" },
+];
+
+const EXTRA_MENU_ITEMS = [
+  {
+    icon: <BusinessCenterOutlinedIcon />,
+    label: "Покупайте как юрлицо",
+    secondary: "С возможностью получить вычет до 20% НДС",
+  },
+  {
+    icon: <StoreMallDirectoryOutlinedIcon />,
+    label: "Продавайте на Маркете",
+    secondary: "Дарим 10 000 бонусов на продвижение",
+  },
+  {
+    icon: <SupportAgentOutlinedIcon />,
+    label: "Чат с поддержкой",
+  },
+];
+
+const ProfileIcon: React.FC = () => {
+  const { isAuthenticated, logout, user, fetchUserProfile } = useAuthContext();
+  const [avatarPreview, setAvatarPreview] = useState<string>(DEFAULT_AVATAR_URL);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
 
-  const handleProfileClick = () => {
-    if (isAuthenticated) {
-      navigate("/profile"); // Переход в профиль
+  useEffect(() => {
+    if (!isAuthenticated) return; 
+    if (!user) {
+      fetchUserProfile();
     } else {
-      navigate("/auth"); // Переход на страницу входа
+      setAvatarPreview(user.avatar ? `http://localhost:5000${user.avatar}` : DEFAULT_AVATAR_URL);
     }
+  }, [isAuthenticated, user, fetchUserProfile]);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
   };
 
+  const handleMenuClose = useCallback(() => setAnchorEl(null), []);
+
+  const handleNavigate = useCallback(
+    (path: string) => {
+      navigate(path);
+      handleMenuClose();
+    },
+    [navigate, handleMenuClose]
+  );
+
+  const handleLogout = useCallback(() => {
+    logout();
+    handleMenuClose();
+  }, [logout, handleMenuClose]);
+
+  if (!isAuthenticated) {
+    return (
+      <Box
+        onClick={() => navigate("/auth")}
+        sx={{
+          backgroundColor: "#f5f5f5",
+          color: "black",
+          fontSize: "14px",
+          fontWeight: "normal",
+          borderRadius: "8px",
+          padding: "8px 16px",
+          textTransform: "capitalize",
+          "&:hover": { backgroundColor: "#e0e0e0" },
+          cursor: "pointer",
+        }}
+      >
+        Войти
+      </Box>
+    );
+  }
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        cursor: "pointer",
-      }}
-      onClick={handleProfileClick}
-    >
-      {isAuthenticated ? (
-        <Avatar
-          src={userPhotoUrl}
-          alt="Profile"
+    <Box sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+      <Avatar
+        src={avatarPreview}
+        alt={user?.firstName || "Profile"}
+        onClick={handleMenuOpen}
+        sx={{
+          width: 40,
+          height: 40,
+          border: "2px solid #ddd",
+          transition: "transform 0.2s",
+          "&:hover": { transform: "scale(1.1)" },
+        }}
+      />
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        PaperProps={{ style: { maxWidth: 300 } }}
+      >
+        <Box
           sx={{
-            width: 40,
-            height: 40,
-            border: "2px solid #ddd",
+            padding: "16px",
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
           }}
-        />
-      ) : (
-        <Button
-          variant="text"
-          sx={{
-            backgroundColor: "#f5f5f5",
-            color: "black",
-            fontSize: "14px",
-            fontWeight: "normal",
-            borderRadius: "8px",
-            padding: "8px 16px",
-            textTransform: "capitalize", 
-            "&:hover": { backgroundColor: "#e0e0e0" },
-          }}
+          onClick={() => handleNavigate("/profile")}
         >
-          Войти
-        </Button>
-      )}
+          <Avatar src={avatarPreview} alt="User" sx={{ width: 50, height: 50 }} />
+          <Box sx={{ marginLeft: "12px" }}>
+            <Typography variant="subtitle1" fontWeight="bold">
+              {user?.firstName || "Имя пользователя"}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {user?.email || "user@email.com"}
+            </Typography>
+          </Box>
+        </Box>
+        <Divider />
+
+        {USER_MENU_ITEMS.map((item, index) => (
+          <MenuItem key={index}>
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.label} />
+          </MenuItem>
+        ))}
+
+        <Divider />
+
+        {EXTRA_MENU_ITEMS.map((item, index) => (
+          <MenuItem key={`extra-${index}`}>
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.label} secondary={item.secondary} />
+          </MenuItem>
+        ))}
+
+        <MenuItem onClick={() => handleNavigate("/profile")}>
+          <ListItemIcon>
+            <SettingsOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Настройки" />
+        </MenuItem>
+
+        <MenuItem>
+          <ListItemIcon>
+            <HelpOutlineOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Справка" />
+        </MenuItem>
+        <Divider />
+
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <LogoutOutlinedIcon color="error" />
+          </ListItemIcon>
+          <ListItemText primary="Выйти" />
+        </MenuItem>
+      </Menu>
     </Box>
   );
 };

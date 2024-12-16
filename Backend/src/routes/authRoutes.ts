@@ -1,21 +1,15 @@
-import express from 'express';
-import { registerUser, loginUser, getProfile } from '../controllers/authController';
-import { authMiddleware, checkRole, CustomRequest } from '../middleware/authMiddleware';
+import express from "express";
+import { registerBuyer, loginBuyer, getProfile } from "../controllers/auth/buyerAuthController";
+import authMiddleware from "../middleware/authMiddleware";
 
 const router = express.Router();
 
-// Регистрация
-router.post('/register', registerUser);
-
-// Авторизация
-router.post('/login', loginUser);
-
-// Профиль пользователя
-router.get('/profile', authMiddleware, getProfile);
-
-// Пример защищенного маршрута
-router.get('/admin', authMiddleware, checkRole(['admin']), (req: CustomRequest, res) => {
-  res.json({ message: `Welcome, admin! User ID: ${req.user?.id}` });
-});
+router.post("/register", registerBuyer);
+router.post("/login", loginBuyer);
+router.get("/profile", authMiddleware, getProfile);
+router.get("/register", (req, res) => {
+    res.status(405).json({ message: "Use POST method to register." });
+  });
+  
 
 export default router;
