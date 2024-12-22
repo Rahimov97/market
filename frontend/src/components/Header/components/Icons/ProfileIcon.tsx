@@ -44,12 +44,10 @@ const EXTRA_MENU_ITEMS = [
   {
     icon: <BusinessCenterOutlinedIcon />,
     label: "Покупайте как юрлицо",
-    secondary: "С возможностью получить вычет до 20% НДС",
   },
   {
     icon: <StoreMallDirectoryOutlinedIcon />,
     label: "Продавайте на Маркете",
-    secondary: "Дарим 10 000 бонусов на продвижение",
   },
   {
     icon: <SupportAgentOutlinedIcon />,
@@ -168,7 +166,7 @@ const ProfileIcon: React.FC = () => {
         {EXTRA_MENU_ITEMS.map((item, index) => (
           <MenuItem key={`extra-${index}`}>
             <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.label} secondary={item.secondary} />
+            <ListItemText primary={item.label} />
           </MenuItem>
         ))}
 
