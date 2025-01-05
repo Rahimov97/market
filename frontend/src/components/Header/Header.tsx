@@ -17,8 +17,11 @@ const Header: React.FC = () => {
   const icons = [
     { icon: <OrdersIcon />, label: "Заказы" },
     { icon: <FavoritesIcon />, label: "Избранное" },
-    { icon: <CartIcon />, label: "Корзина" },
   ];
+
+  const handleCartClick = () => {
+    navigate("/cart");
+  };
 
   return (
     <AppBar
@@ -41,41 +44,72 @@ const Header: React.FC = () => {
       >
         <Logo />
 
-        <Box sx={{ display: "flex", alignItems: "center", flex: 1, justifyContent: "center", gap: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flex: 1,
+            justifyContent: "center",
+            gap: 2,
+          }}
+        >
           <CategoryMenu />
           <SearchBar />
         </Box>
 
         <Box display="flex" alignItems="center" gap={3}>
           {icons.map(({ icon, label }, index) => (
-            <Box key={index} display="flex" flexDirection="column" alignItems="center">
+            <Box
+              key={index}
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+            >
               {icon}
-              <Typography variant="caption" sx={{ color: "#888", fontSize: "12px" }}>
+              <Typography
+                variant="caption"
+                sx={{ color: "#888", fontSize: "12px" }}
+              >
                 {label}
               </Typography>
             </Box>
           ))}
 
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            onClick={handleCartClick}
+            sx={{ cursor: "pointer" }}
+          >
+            <CartIcon />
+            <Typography
+              variant="caption"
+              sx={{ color: "#888", fontSize: "12px" }}
+            >
+              Корзина
+            </Typography>
+          </Box>
+
           {isAuthenticated ? (
             <ProfileIcon />
           ) : (
             <Button
-  variant="contained"
-  onClick={() => {
-    if (!isAuthenticated) {
-      navigate("/auth", { replace: true });
-    }
-  }}
-  sx={{
-    backgroundColor: "#007BFF",
-    color: "#fff",
-    textTransform: "none",
-    "&:hover": { backgroundColor: "#0056b3" },
-  }}
->
-  Войти
-</Button>
-
+              variant="contained"
+              onClick={() => {
+                if (!isAuthenticated) {
+                  navigate("/auth", { replace: true });
+                }
+              }}
+              sx={{
+                backgroundColor: "#007BFF",
+                color: "#fff",
+                textTransform: "none",
+                "&:hover": { backgroundColor: "#0056b3" },
+              }}
+            >
+              Войти
+            </Button>
           )}
         </Box>
       </Toolbar>

@@ -4,10 +4,11 @@
     "module": "commonjs",
     "outDir": "./dist",
     "rootDir": "./src",
+    "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "typeRoots": ["./src/types", "./node_modules/@types"]
+    "typeRoots": ["./src/types", "./node_modules/@types", "./@types"]
   },
   "include": ["src/**/*", "src/types/**/*.d.ts"]
 }

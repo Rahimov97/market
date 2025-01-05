@@ -1,19 +1,35 @@
 import React from "react";
-import { Box, Typography, IconButton } from "@mui/material";
+import { Box, Typography, IconButton, Button } from "@mui/material";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useFavorite } from "@/features/Products/hooks/useFavorite";
+import { useCart } from "@/features/Buyer/hooks/useCart"; // Импортируем хук для корзины
 
 interface ProductCardProps {
+  id: string; // Добавляем ID для работы с корзиной
   image?: string;
   name: string;
   price: number;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ image, name, price }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ id, image, name, price }) => {
   const { isFavorite, toggleFavorite, isAnimating } = useFavorite();
+  const { addItemToCart } = useCart(); // Используем метод добавления в корзину
 
   const placeholderImage = "https://via.placeholder.com/220x180?text=No+Image";
+
+  const handleAddToCart = () => {
+    if (!id) {
+      console.error("ProductCard error: Product ID is undefined or null.");
+      return;
+    }
+    addItemToCart(id, 1); // Добавляем один товар в корзину
+  };
+
+  if (!id) {
+    console.error("ProductCard rendered without a valid id.");
+    return <div>Error: Product data is invalid.</div>;
+  }
 
   return (
     <Box
@@ -75,6 +91,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ image, name, price }) => {
         <Typography variant="h6" sx={{ color: "#d32f2f", fontWeight: "bold", marginTop: "4px" }}>
           {price}₽
         </Typography>
+
+        {/* Кнопка добавления в корзину */}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddToCart}
+          sx={{ marginTop: "8px", textTransform: "none" }}
+        >
+          Добавить в корзину
+        </Button>
       </Box>
     </Box>
   );

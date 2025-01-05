@@ -1,5 +1,5 @@
-export { default as createProduct } from './createProduct';
-export { default as updateProduct } from './updateProduct';
-export { default as deleteProduct } from './deleteProduct';
-export { default as getProductById } from './getProductById';
-export { default as getProducts } from './getProducts';
+export { createProduct } from '../products/productController';
+export { updateProduct } from '../products/productController';
+export { deleteProduct } from '../products/productController';
+export { getProductById } from '../products/productController';
+export { getProducts } from '../products/productController';

@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 
-// Класс кастомной ошибки
 export class CustomError extends Error {
   statusCode: number;
 
@@ -11,14 +10,18 @@ export class CustomError extends Error {
   }
 }
 
-// Обработчик для несуществующих маршрутов
 export const notFound = (req: Request, res: Response, next: NextFunction): void => {
-  const error = new CustomError(`Not Found - ${req.originalUrl}`, 404);
+  const error = new CustomError(`Не найдено - ${req.originalUrl}`, 404);
   next(error);
 };
 
-// Централизованный обработчик ошибок
-export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction): void => {
+export const errorHandler = (
+  err: Error | CustomError,
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const isProduction = process.env.NODE_ENV === 'production';
   const statusCode =
     err instanceof CustomError
       ? err.statusCode
@@ -26,13 +29,14 @@ export const errorHandler = (err: any, req: Request, res: Response, next: NextFu
       ? res.statusCode
       : 500;
 
-  const response = {
+  const errorResponse = {
     status: 'error',
-    message: err.message || 'Server Error',
-    details: process.env.NODE_ENV === 'production' ? null : err.stack, // Stacktrace скрывается в production
-    path: req.originalUrl, // Указывает, на каком маршруте произошла ошибка
-    method: req.method, // Указывает, какой метод вызвал ошибку
+    message: err.message || 'Ошибка сервера',
+    statusCode,
+    details: isProduction ? null : err.stack,
+    path: req.originalUrl,
+    method: req.method,
   };
 
-  res.status(statusCode).json(response);
+  res.status(statusCode).json(errorResponse);
 };

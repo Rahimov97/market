@@ -25,6 +25,7 @@ const ProductListPage: React.FC = () => {
         {products.map((product) => (
           <Grid item xs={12} sm={6} md={4} lg={2} key={product._id}>
             <ProductCard
+              id={product._id}
               name={product.name}
               price={product.offers[0]?.price || 0}
               image={product.image}

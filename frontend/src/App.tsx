@@ -7,11 +7,12 @@ import BannerCarousel from "@/components/UI/Carousel/BannerCarousel";
 import ProductListPage from "@/features/Products/pages/ProductListPage";
 import ProductDetailsPage from "@/features/Products/pages/ProductDetailsPage";
 import LoginRegister from "@/features/Auth/pages/AuthPage";
-import BuyerProfile from "@/features/Buyer/pages/BuyerProfile"
+import BuyerProfile from "@/features/Buyer/pages/BuyerProfile";
 import SearchResultsPage from "@/features/Search/pages/SearchResultsPage";
 import GlobalStyles from "@/styles/GlobalStyles";
 import AuthRedirect from "@/components/UI/AuthRedirect";
 import ProtectedRoute from "@/components/UI/ProtectedRoute";
+import CartPage from "@/features/Buyer/pages/CartPage"; // Подключаем страницу корзины
 
 const App: React.FC = () => {
   return (
@@ -67,6 +68,17 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               }
             />
+
+            {/* Добавляем маршрут для корзины */}
+            <Route
+              path="/cart"
+              element={
+                <MainLayout>
+                  <CartPage />
+                </MainLayout>
+              }
+            />
+
             {/* Перенаправляем все некорректные маршруты на главную */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
