@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { User } from "../../models/User";
 import { verifyToken } from "./utils";
-import CustomError from "../../utils/errorHandler";
+import CustomError from "../../../../errorHandler";
 import mongoose from "mongoose";
 
-// Middleware для проверки авторизации
 export const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
@@ -13,36 +12,34 @@ export const checkAuth = async (req: Request, res: Response, next: NextFunction)
     }
 
     const token = authHeader.split(" ")[1];
-    console.log("Token received:", token);
+    console.info("[checkAuth] Токен получен:", token);
 
-    console.log("Calling verifyToken with token:", token);
     const decoded = verifyToken(token);
-    console.log("Decoded token:", decoded);
+    console.info("[checkAuth] Декодированный токен:", decoded);
 
-    if (!decoded || !decoded.id) {
-      throw new CustomError("Невалидный токен: отсутствует поле id", 401);
+    if (!decoded || !decoded.id || !decoded.role) {
+      throw new CustomError("Недействительный токен: отсутствуют поля id/role", 401);
     }
 
-    // Находим пользователя
     const user = await User.findById(decoded.id).select("role");
-    console.log("User found:", user);
-
-    if (!user) {
-      throw new CustomError("Пользователь не найден", 404);
+    if (!user || !user.role) {
+      throw new CustomError("Пользователь не найден или у него нет роли", 404);
     }
 
-    // Приведение role к строке
     req.user = {
       id: decoded.id,
-      role: user.role.toString(), // Преобразование роли в строку
+      role: user.role.toString(),
     };
 
+    console.info(`[checkAuth] Авторизован: ID=${req.user.id}, Роль=${req.user.role}`);
     next();
   } catch (error) {
-    console.error("Error in checkAuth:", error);
+    console.error("[checkAuth] Ошибка авторизации:", error);
     next(error);
   }
 };
+
+
 // Получение профиля
 export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {

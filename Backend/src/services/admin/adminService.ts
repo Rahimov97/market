@@ -1,7 +1,7 @@
 import { Admin } from "../../models/Admin";
 import { Role } from "../../models/Role";
 import { AuditLog } from "../../models/AuditLog";
-import CustomError from "../../utils/errorHandler";
+import CustomError from "../../../../errorHandler";
 import { Types } from "mongoose";
 
 // Типизация параметров фильтрации

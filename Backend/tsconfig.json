@@ -10,5 +10,5 @@
     "skipLibCheck": true,
     "typeRoots": ["./src/types", "./node_modules/@types", "./@types"]
   },
-  "include": ["src/**/*", "src/types/**/*.d.ts"]
+  "include": ["src/**/*", "src/types/**/*.d.ts", "../errorHandler.ts"]
 }

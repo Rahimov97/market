@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { Category, ICategory } from "../../models/Category";
-import CustomError from "../../utils/errorHandler";
+import CustomError from "../../../../errorHandler";
 import { slugify } from "../../utils/slugify";
 
 export const createCategory = async (data: Partial<ICategory>): Promise<ICategory> => {

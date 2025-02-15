@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Product } from "../../models/Product";
 import { AuditLog } from "../../models/AuditLog";
-import CustomError from "../../utils/errorHandler";
+import CustomError from "../../../../errorHandler";
 
 // Централизованная функция для логирования
 const logAction = async (actor: string | undefined, action: string, resource: string, resourceId?: string, changes?: any) => {

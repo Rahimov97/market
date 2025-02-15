@@ -21,57 +21,48 @@ import {
 
 const router = express.Router();
 
-// --- Регистрация ---
 router.post(
   "/register",
-  registerValidation, // Валидация данных для регистрации
-  validationMiddleware, // Обработка ошибок валидации
+  registerValidation,
+  validationMiddleware,
   registerBuyer
 );
 
-// --- Вход ---
 router.post(
   "/login",
-  loginValidation, // Валидация данных для входа
-  validationMiddleware, // Обработка ошибок валидации
+  loginValidation,
+  validationMiddleware,
   loginBuyer
 );
 
-// --- Профиль ---
-// Получение профиля
 router.get("/profile", authMiddleware, getProfile);
 
-// Обновление профиля
 router.put(
   "/profile",
-  authMiddleware, // Проверка авторизации
-  updateProfileValidation, // Валидация данных профиля
-  validationMiddleware, // Обработка ошибок валидации
+  authMiddleware,
+  updateProfileValidation,
+  validationMiddleware,
   updateProfileController
 );
 
-// Обновление аватара
 router.put(
   "/profile/avatar",
-  authMiddleware, // Проверка авторизации
-  updateAvatarValidation, // Валидация URL аватара
-  validationMiddleware, // Обработка ошибок валидации
+  authMiddleware,
+  updateAvatarValidation, 
+  validationMiddleware, 
   updateAvatarController
 );
 
-// --- Адреса ---
-// Добавление адреса
 router.post(
   "/profile/address",
-  authMiddleware, // Проверка авторизации
-  validationMiddleware, // Обработка ошибок валидации
+  authMiddleware, 
+  validationMiddleware, 
   addAddressController
 );
 
-// Удаление адреса
 router.delete(
   "/profile/address/:index",
-  authMiddleware, // Проверка авторизации
+  authMiddleware, 
   removeAddressController
 );
 

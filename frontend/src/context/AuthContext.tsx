@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import api from "@/services/api/api";
 import { getToken, removeToken, saveToken } from "@/utils/authUtils";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -41,7 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       return jwtDecode<User>(token);
     } catch (error) {
-      console.error("Ошибка декодирования токена:", error);
+      console.error("[AuthContext] Ошибка декодирования токена:", error);
       return null;
     }
   };
@@ -51,16 +51,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const token = getToken();
       if (!token) return;
 
-      const response = await axios.get(`/api/users/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      const response = await api.get(`/users/profile`);
       if (response.data) {
         setIsAuthenticated(true);
         setUser({ ...response.data });
       }
     } catch (error) {
-      console.error("Ошибка загрузки профиля пользователя:", error);
+      console.error("[AuthContext] Ошибка загрузки профиля пользователя:", error);
+      logout();
     } finally {
       setIsLoading(false);
     }
@@ -73,9 +71,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const decoded = decodeToken(token);
         if (decoded) {
           await fetchUserProfile();
+        } else {
+          logout();
         }
+      } else {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
     initializeAuth();
   }, []);
@@ -97,11 +98,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const authenticate = async (isLogin: boolean, payload: AuthPayload) => {
-    const url = isLogin ? "/api/auth/login" : "/api/auth/register";
-    const response = await axios.post(url, payload);
+    try {
+      const url = isLogin ? "/users/login" : "/users/register";
+      const response = await api.post(url, payload);
 
-    if (response.data?.token) {
-      login(response.data.token);
+      if (response.data?.token) {
+        login(response.data.token);
+      }
+    } catch (error: any) {
+      console.error("[AuthContext] Ошибка при аутентификации:", error.response?.data?.message || error.message);
+      throw new Error(error.response?.data?.message || "Ошибка при аутентификации");
     }
   };
 

@@ -1,6 +1,6 @@
 import { Order, IOrder } from "../../models/Order";
 import { Product } from "../../models/Product";
-import CustomError from "../../utils/errorHandler";
+import CustomError from "../../../../errorHandler";
 import { Types } from "mongoose";
 
 // Типизация для фильтров заказа

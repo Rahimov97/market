@@ -1,19 +1,29 @@
 import React from "react";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, CircularProgress } from "@mui/material";
 
 interface AuthFormProps {
   isLogin: boolean;
   phone: string;
   password: string;
   name?: string;
+  loading: boolean;
+  error?: string;
   onChange: (field: string, value: string) => void;
-  onSubmit: (e: React.FormEvent) => void; // Изменено для принятия события формы
+  onSubmit: (e: React.FormEvent) => void;
 }
 
-const AuthForm: React.FC<AuthFormProps> = ({ isLogin, phone, password, name, onChange, onSubmit }) => {
+const AuthForm: React.FC<AuthFormProps> = ({
+  isLogin,
+  phone,
+  password,
+  name,
+  loading,
+  error,
+  onChange,
+  onSubmit,
+}) => {
   return (
     <Box component="form" onSubmit={onSubmit}>
-      {/* Поле ввода имени для регистрации */}
       {!isLogin && (
         <TextField
           placeholder="Имя"
@@ -21,36 +31,38 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, phone, password, name, onC
           onChange={(e) => onChange("firstName", e.target.value)}
           fullWidth
           margin="normal"
+          error={!!error && !name}
+          helperText={!!error && !name ? "Имя обязательно" : ""}
           InputProps={{
             sx: {
               height: "50px",
               borderRadius: "25px",
               paddingLeft: "16px",
-              backgroundColor: "#FFFFFF", // Белый фон для полей ввода
+              backgroundColor: "#FFFFFF",
             },
           }}
         />
       )}
 
-      {/* Поле ввода телефона */}
       <TextField
         placeholder="Телефон"
         value={phone}
         onChange={(e) => onChange("phone", e.target.value)}
         fullWidth
         margin="normal"
-        autoComplete="tel" // Подсказка браузеру для автозаполнения телефона
+        autoComplete="tel"
+        error={!!error && !phone}
+        helperText={!!error && !phone ? "Введите номер телефона" : ""}
         InputProps={{
           sx: {
             height: "50px",
             borderRadius: "25px",
             paddingLeft: "16px",
-            backgroundColor: "#FFFFFF", // Белый фон
+            backgroundColor: "#FFFFFF",
           },
         }}
       />
 
-      {/* Поле ввода пароля */}
       <TextField
         placeholder="Пароль"
         type="password"
@@ -58,34 +70,42 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, phone, password, name, onC
         onChange={(e) => onChange("password", e.target.value)}
         fullWidth
         margin="normal"
-        autoComplete="current-password" // Рекомендуемый атрибут
+        autoComplete="current-password"
+        error={!!error && !password}
+        helperText={!!error && !password ? "Введите пароль" : ""}
         InputProps={{
           sx: {
             height: "50px",
             borderRadius: "25px",
             paddingLeft: "16px",
-            backgroundColor: "#FFFFFF", // Белый фон
+            backgroundColor: "#FFFFFF",
           },
         }}
       />
 
-      {/* Кнопка Войти/Зарегистрироваться */}
+      {error && (
+        <Box sx={{ color: "red", textAlign: "center", mb: 1, fontSize: "14px" }}>
+          {error}
+        </Box>
+      )}
+
       <Button
         fullWidth
-        type="submit" // Используем "submit" для отправки формы
+        type="submit"
+        disabled={loading}
         sx={{
           height: "50px",
           borderRadius: "25px",
           fontWeight: "bold",
-          textTransform: "none", // Текст с первой буквы заглавной
-          backgroundColor: "#001F3F", // Темно-синий фон
-          color: "#FFF", // Белый текст
+          textTransform: "none",
+          backgroundColor: "#001F3F",
+          color: "#FFF",
           "&:hover": {
-            backgroundColor: "#002A5C", // Более темный оттенок синего при наведении
+            backgroundColor: "#002A5C",
           },
         }}
       >
-        {isLogin ? "Войти" : "Зарегистрироваться"}
+        {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : isLogin ? "Войти" : "Зарегистрироваться"}
       </Button>
     </Box>
   );

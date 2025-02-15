@@ -6,7 +6,7 @@ import {
   addAddress,
   removeAddress,
 } from "../../services/users/profileService";
-import CustomError from "../../utils/errorHandler";
+import CustomError from "../../../../errorHandler";
 
 // Получение профиля
 export const getProfileController = async (req: Request, res: Response, next: NextFunction) => {

@@ -1,6 +1,6 @@
 import { User } from "../../models/User";
 import { generateToken } from "../../controllers/Auth/utils";
-import CustomError from "../../utils/errorHandler";
+import CustomError from "../../../../errorHandler";
 
 // Регистрация пользователя
 export const registerUser = async (

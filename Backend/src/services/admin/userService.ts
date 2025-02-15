@@ -1,5 +1,5 @@
 import { User } from "../../models/User";
-import CustomError from "../../utils/errorHandler";
+import CustomError from "../../../../errorHandler";
 import mongoose from "mongoose";
 
 // Создать пользователя

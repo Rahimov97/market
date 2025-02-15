@@ -1,24 +1,46 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api", // Используем относительный путь, чтобы прокси Vite перенаправлял запросы
+  baseURL: "http://localhost:5000/api", 
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Интерсептор для добавления токена
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token"); // Изменяем "authToken" на "token"
-    console.log("Token in interceptor:", token); // Логируем токен для отладки
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    try {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+
+      return config;
+    } catch (error) {
+      console.error("[api] Ошибка получения токена из localStorage:", error);
+      return config;
     }
-    return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error("[api] Ошибка в интерсепторе запроса:", error);
+    return Promise.reject(error);
+  }
 );
 
+api.interceptors.response.use(
+  (response) => response, 
+  (error) => {
+    if (error.response) {
+      console.error(`[api] Ошибка в ответе сервера: ${error.response.status} -`, error.response.data);
+    } else if (error.request) {
+      console.error("[api] Ошибка запроса: сервер не ответил.", error.request);
+    } else {
+      console.error("[api] Ошибка при настройке запроса:", error.message);
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default api;

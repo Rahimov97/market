@@ -12,7 +12,7 @@ interface AuthPayload {
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { login: setAuthContext } = useAuthContext();
+  const { login: setUserToken, logout, user } = useAuthContext();
 
   const authenticate = async (isLogin: boolean, payload: AuthPayload) => {
     setLoading(true);
@@ -27,13 +27,15 @@ export const useAuth = () => {
         throw new Error("Не удалось получить токен. Проверьте ответ сервера.");
       }
 
-      setAuthContext(response.token); // Устанавливаем токен в AuthContext
+      setUserToken(response.token);
       return response;
     } catch (err: any) {
       const errorMessage =
         err.response?.data?.message ||
         err.message ||
-        "Произошла неизвестная ошибка. Попробуйте снова.";
+        "Произошла ошибка при авторизации. Попробуйте снова.";
+
+      console.error("[useAuth] Ошибка аутентификации:", errorMessage);
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -41,5 +43,5 @@ export const useAuth = () => {
     }
   };
 
-  return { authenticate, loading, error };
+  return { authenticate, loading, error, logout, user };
 };

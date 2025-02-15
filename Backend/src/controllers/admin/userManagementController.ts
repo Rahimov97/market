@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as userService from "../../services/admin/userService";
-import CustomError from "../../utils/errorHandler";
+import CustomError from "../../../../errorHandler";
 
 // Универсальная функция для ответа
 const sendResponse = (res: Response, message: string, data: any) => {

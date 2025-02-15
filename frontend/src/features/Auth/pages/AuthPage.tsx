@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import AuthForm from "../components/AuthForm";
 import AuthToggle from "../components/AuthToggle";
@@ -14,17 +14,27 @@ const AuthPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    setError(null); 
+  }, [isLogin]);
+
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const isFormValid = isLogin
+    ? formData.phone.trim() !== "" && formData.password.trim() !== ""
+    : formData.firstName.trim() !== "" && formData.phone.trim() !== "" && formData.password.trim() !== "";
+
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // Предотвращаем стандартное поведение формы
+    e.preventDefault();
+    if (!isFormValid) return; 
+
     setLoading(true);
     setError(null);
     try {
       await authenticate(isLogin, formData);
-      navigate("/"); // Перенаправляем после успешной авторизации
+      navigate("/"); 
     } catch (err: any) {
       setError(err.message || "Ошибка авторизации");
     } finally {
@@ -47,14 +57,19 @@ const AuthPage: React.FC = () => {
           backgroundColor: "#fff",
           borderRadius: "12px",
           padding: "32px",
-          width: "320px",
+          minWidth: "340px",
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
           color: "#000",
           position: "relative",
         }}
       >
         <BackButton />
-        <Box sx={{ height: "30px" }} />
-        <AuthToggle isLogin={isLogin} onToggle={setIsLogin} />
+        <Box sx={{ height: "20px" }} />
+        
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+          <AuthToggle isLogin={isLogin} onToggle={setIsLogin} />
+        </Box>
+
         <AuthForm
           isLogin={isLogin}
           phone={formData.phone}
@@ -63,16 +78,15 @@ const AuthPage: React.FC = () => {
           onChange={handleInputChange}
           onSubmit={handleSubmit}
         />
+
         {error && (
-          <Typography
-            variant="body2"
-            sx={{ color: "red", marginTop: "8px", textAlign: "center" }}
-          >
+          <Typography variant="body2" sx={{ color: "red", mt: 1, textAlign: "center" }}>
             {error}
           </Typography>
         )}
+
         {loading && (
-          <Box sx={{ display: "flex", justifyContent: "center", marginTop: "16px" }}>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
             <CircularProgress />
           </Box>
         )}

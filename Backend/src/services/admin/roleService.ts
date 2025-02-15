@@ -1,7 +1,7 @@
 import { Role } from "../../models/Role";
 import { Permission } from "../../models/Permission";
 import { Admin } from "../../models/Admin";
-import CustomError from "../../utils/errorHandler";
+import CustomError from "../../../../errorHandler";
 import mongoose, { Schema } from "mongoose";
 
 // 1. Создание роли

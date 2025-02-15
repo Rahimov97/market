@@ -12,6 +12,7 @@ import adminProductRoutes from "./adminProductRoutes";
 import adminOrderRoutes from "./adminOrderRoutes";
 import adminAnalyticsRoutes from "./adminAnalyticsRoutes";
 
+
 const router = express.Router();
 
 router.use('/products', productRoutes);

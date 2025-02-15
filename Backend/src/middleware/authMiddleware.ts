@@ -26,13 +26,11 @@ declare global {
   }
 }
 
-// Обработчик ошибок авторизации
 const handleAuthError = (res: Response, message: string): void => {
   console.warn(`[authMiddleware] Ошибка авторизации: ${message}`);
   res.status(401).json({ status: "error", message });
 };
 
-// Middleware для проверки токена
 const authMiddleware: RequestHandler = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
@@ -58,7 +56,6 @@ const authMiddleware: RequestHandler = async (req, res, next) => {
     const userId = typeof decoded.id === "string" ? decoded.id : decoded.id.toString();
     console.info(`[authMiddleware] Декодирован ID пользователя: ${userId}, Роль: ${decoded.role}`);
 
-    // Проверка пользователя или продавца
     const user =
       decoded.role === "seller"
         ? await Seller.findById(userId).select("role")
@@ -91,7 +88,6 @@ const authMiddleware: RequestHandler = async (req, res, next) => {
   }
 };
 
-// Middleware для проверки ролей
 export const roleMiddleware = (allowedRoles: string | string[]): RequestHandler => {
   const rolesArray = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
 
