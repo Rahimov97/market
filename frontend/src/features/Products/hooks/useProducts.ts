@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchProducts } from "@/features/Products/api/getProducts";
+import { getProducts } from "@/services/api/productsApi"; 
 
 export const useProducts = () => {
   const [products, setProducts] = useState<any[]>([]);
@@ -9,10 +9,14 @@ export const useProducts = () => {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const data = await fetchProducts(); // Используем fetchProducts вместо getProducts
+        const data = await getProducts();
+        if (!Array.isArray(data)) {
+          throw new Error("Некорректный формат данных: `products` отсутствует или не массив");
+        }
         setProducts(data);
       } catch (err: any) {
-        setError(err.message || "Failed to load products");
+        console.error("[useProducts] Ошибка загрузки товаров:", err.message);
+        setError(err.message);
       } finally {
         setLoading(false);
       }

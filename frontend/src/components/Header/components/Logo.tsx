@@ -19,7 +19,7 @@ const Logo: React.FC = () => {
       onClick={handleLogoClick}
     >
       <img
-        src="https://via.placeholder.com/40"
+        src="https://placehold.co/40"
         alt="Logo1"
         style={{
           borderRadius: "50%",
@@ -28,7 +28,7 @@ const Logo: React.FC = () => {
         }}
       />
       <img
-        src="https://via.placeholder.com/80x40?text=Logo"
+        src="https://placehold.co/80x40?text=Logo"
         alt="Logo2"
         style={{
           height: 40,

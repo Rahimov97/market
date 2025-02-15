@@ -141,7 +141,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onUpdateSuccess, onUpdateErro
 
       <Box display="flex" alignItems="center" justifyContent="center" mb={3}>
         <Avatar
-          src={avatarPreview || "https://via.placeholder.com/100"}
+          src={avatarPreview || "https://placehold.co/100"}
           alt="Аватар"
           sx={{ width: 120, height: 120, mr: 3 }}
         />

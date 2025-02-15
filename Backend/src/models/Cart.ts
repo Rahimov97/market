@@ -7,14 +7,14 @@ interface PopulatedProduct {
 }
 
 interface CartItem {
-  _id?: Types.ObjectId; // Уникальный идентификатор для элемента
+  _id?: Types.ObjectId;
   productId: Types.ObjectId | PopulatedProduct;
   quantity: number;
-  priceAtAddition: number; // Цена на момент добавления
-  discount?: number; // Скидка на товар
-  sellerId: Types.ObjectId; // Продавец товара
-  options?: Map<string, string>; // Выбранные опции (например, цвет, размер)
-  subtotal: number; // Подсумма (цена с учётом количества и скидки)
+  priceAtAddition: number; 
+  discount?: number;
+  sellerId: Types.ObjectId; 
+  options?: Map<string, string>; 
+  subtotal: number; 
 }
 
 
@@ -22,8 +22,8 @@ export interface CartDocument extends Document {
   userId: Types.ObjectId;
   items: CartItem[];
   status: "active" | "pending" | "paid" | "shipped" | "cancelled";
-  totalAmount: number; // Общая сумма корзины
-  totalDiscount?: number; // Общая скидка
+  totalAmount: number; 
+  totalDiscount?: number; 
   additionalServices?: {
     name: string;
     price: number;
@@ -49,7 +49,7 @@ export interface CartDocument extends Document {
     timestamp: Date;
   }[];
   expiresAt?: Date;
-  isExpired: boolean; // Добавлен булевый флаг для истёкшей корзины
+  isExpired: boolean;
   lastUpdated: Date;
 }
 

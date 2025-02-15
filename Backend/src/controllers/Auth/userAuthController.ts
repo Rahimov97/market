@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { User } from "../../models/User";
 import { verifyToken } from "./utils";
-import CustomError from "../../../../errorHandler";
+import CustomError from "../../utils/errorHandler";
 import mongoose from "mongoose";
 
 export const checkAuth = async (req: Request, res: Response, next: NextFunction) => {

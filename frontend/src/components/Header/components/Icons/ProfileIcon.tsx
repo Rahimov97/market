@@ -28,7 +28,7 @@ import {
   LogoutOutlined as LogoutOutlinedIcon
 } from "@mui/icons-material";
 
-const DEFAULT_AVATAR_URL = "https://via.placeholder.com/40";
+const DEFAULT_AVATAR_URL = "https://placehold.co/40";
 
 const USER_MENU_ITEMS = [
   { icon: <InventoryOutlinedIcon />, label: "Заказы" },

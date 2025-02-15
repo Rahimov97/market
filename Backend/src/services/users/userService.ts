@@ -1,5 +1,5 @@
 import { User, IUser } from "../../models/User"; 
-import CustomError from "../../../../errorHandler";
+import CustomError from "../../utils/errorHandler";
 
 // Поиск пользователя по ID
 export const findUserById = async (userId: string): Promise<IUser> => {

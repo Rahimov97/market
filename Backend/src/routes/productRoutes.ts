@@ -21,16 +21,14 @@ import validationMiddleware from "../middleware/validationMiddleware";
 
 const router = express.Router();
 
-// Middleware для продавцов
 const sellerAuthMiddleware = [authMiddleware, roleMiddleware("seller")];
 
-// CRUD маршруты для продуктов
 router.post(
   "/",
   ...sellerAuthMiddleware,
   validateProductCreation,
   validationMiddleware,
-  createProduct // Создание нового продукта
+  createProduct 
 );
 
 router.put(
@@ -38,19 +36,19 @@ router.put(
   ...sellerAuthMiddleware,
   validateProductUpdate,
   validationMiddleware,
-  updateProduct // Обновление информации о продукте
+  updateProduct
 );
 
 router.put(
   "/:id/offer",
   ...sellerAuthMiddleware,
-  validateUpdateOffer, // Валидация обновления предложения
+  validateUpdateOffer, 
   validationMiddleware,
-  updateProductOffer // Обновление предложения продавца
+  updateProductOffer
 );
 
 router.delete(
-  "/:id/offer", // Специфичный маршрут
+  "/:id/offer", 
   ...sellerAuthMiddleware,
   validateDeleteOffer,
   validationMiddleware,
@@ -58,7 +56,7 @@ router.delete(
 );
 
 router.delete(
-  "/:id", // Общий маршрут
+  "/:id", 
   ...sellerAuthMiddleware,
   roleMiddleware(["admin", "manager"]),
   validateGetProductById,
@@ -69,12 +67,12 @@ router.delete(
 router.get(
   "/:id/seller",
   ...sellerAuthMiddleware,
-  validateGetProductById, // Валидация получения продукта по ID
+  validateGetProductById, 
   validationMiddleware,
-  getProductForSeller // Получение продукта с учетом данных продавца
+  getProductForSeller
 );
 
-router.get("/:id", validateGetProductById, validationMiddleware, getProductById); // Получение продукта по ID
-router.get("/", getProducts); // Получение списка продуктов
+router.get("/:id", validateGetProductById, validationMiddleware, getProductById);
+router.get("/", getProducts); 
 
 export default router;

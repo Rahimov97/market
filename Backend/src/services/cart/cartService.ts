@@ -2,25 +2,22 @@ import { Cart } from "../../models/Cart";
 import { Product } from "../../models/Product";
 import mongoose, { Types } from "mongoose";
 
-// Проверка, является ли productId заполненным объектом после populate
 const isPopulatedProduct = (
   productId: Types.ObjectId | { _id: string; name: string }
 ): productId is { _id: string; name: string } => {
   return typeof productId === "object" && productId !== null && "_id" in productId && "name" in productId;
 };
 
-// Универсальная функция для поиска или создания корзины
 const findOrCreateCart = async (userId: string) => {
   const cart = await Cart.findOne({ userId });
   return cart || new Cart({ userId, items: [] });
 };
 
-// Добавление товара в корзину
 export const addToCart = async (
   userId: string,
   productId: Types.ObjectId,
   quantity: number,
-  priceAtAddition: number,
+  priceAtAddition: number | undefined,
   sellerId: Types.ObjectId,
   options: Map<string, string> = new Map()
 ) => {
@@ -29,9 +26,12 @@ export const addToCart = async (
     throw new Error("Product not found");
   }
 
+  if (!priceAtAddition || typeof priceAtAddition !== "number") {
+    throw new Error("Invalid priceAtAddition: must be a number.");
+  }
+
   const cart = await findOrCreateCart(userId);
 
-  // Проверяем наличие товара в корзине
   const existingItem = cart.items.find(
     (item) =>
       item.productId instanceof mongoose.Types.ObjectId
@@ -42,27 +42,23 @@ export const addToCart = async (
   );
 
   if (existingItem) {
-    // Если товар уже есть, увеличиваем его количество
     existingItem.quantity += quantity;
     existingItem.subtotal = existingItem.quantity * (existingItem.priceAtAddition - (existingItem.discount || 0));
   } else {
-    // Если товара нет, добавляем новый элемент
     cart.items.push({
       productId,
       quantity,
       priceAtAddition,
       sellerId,
-      options,
+      options: options || new Map(),
       subtotal: quantity * priceAtAddition,
     });
   }
 
-  // Сохраняем корзину
   await cart.save();
   return getCart(userId);
 };
 
-// Получение содержимого корзины
 export const getCart = async (userId: string) => {
   const cart = await Cart.findOne({ userId }).populate({
     path: "items.productId",
@@ -96,7 +92,6 @@ export const getCart = async (userId: string) => {
   };
 };
 
-// Обновление количества товара
 export const updateCartItemQuantity = async (
   userId: string,
   productId: string,
@@ -123,7 +118,6 @@ export const updateCartItemQuantity = async (
   return getCart(userId);
 };
 
-// Удаление товара из корзины
 export const removeCartItem = async (userId: string, productId: string) => {
   const cart = await Cart.findOne({ userId });
   if (!cart) throw new Error("Cart not found");

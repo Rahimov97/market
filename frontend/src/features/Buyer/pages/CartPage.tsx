@@ -1,86 +1,100 @@
-import React from "react";
-import { Box, Typography, Button, IconButton, CircularProgress } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { getCart, updateCartQuantity, removeFromCart } from "@/services/api/cartApi";
+import { Box, Button, CircularProgress, Typography, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useCart } from "@/features/Buyer/hooks/useCart";
 
 const CartPage: React.FC = () => {
-  const { cart, updateItemQuantity, removeItemFromCart, loading, error } = useCart();
+  const [cart, setCart] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleQuantityChange = (productId: string, quantity: number) => {
-    if (!productId) {
-      console.error("Product ID is undefined! Cannot change quantity.");
-      return;
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const data = await getCart();
+        console.log("[CartPage] Данные корзины:", data);
+        setCart(data.items || []);
+      } catch (err: any) {
+        setError(err.message || "Ошибка загрузки корзины");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCart();
+  }, []);  
+
+  const handleUpdateQuantity = async (productId: string, quantity: number) => {
+    if (quantity < 1) return;
+    try {
+      await updateCartQuantity(productId, quantity);
+      setCart((prevCart) =>
+        prevCart.map((item) =>
+          item.product._id === productId ? { ...item, quantity } : item
+        )
+      );
+    } catch (err) {
+      console.error("Ошибка обновления количества:", err);
     }
-    console.log("Updating quantity for:", productId, "to:", quantity);
-    updateItemQuantity(productId, quantity);
   };
-  
-  const handleRemove = (productId: string) => {
-    console.log("handleRemove:", { productId });
-    if (!productId) {
-      console.error("Product ID is undefined! Cannot remove item.");
-      return;
+
+  const handleRemoveItem = async (productId: string) => {
+    try {
+      await removeFromCart(productId);
+      setCart((prevCart) => prevCart.filter((item) => item.product._id !== productId));
+    } catch (err) {
+      console.error("Ошибка удаления товара:", err);
     }
-    removeItemFromCart(productId);
   };
+
+  if (loading) return <CircularProgress />;
+  if (error) return <Typography color="error">{error}</Typography>;
 
   return (
-    <Box p={4}>
-      <Typography variant="h4" mb={3}>
-        Shopping Cart
-      </Typography>
-
-      {loading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height="50vh">
-          <CircularProgress />
-        </Box>
-      ) : error ? (
-        <Typography variant="body1" color="error">
-          {error}
-        </Typography>
-      ) : cart.length === 0 ? (
-        <Typography variant="body1">Your cart is empty.</Typography>
+    <Box sx={{ padding: 4 }}>
+      <Typography variant="h4" gutterBottom>Корзина</Typography>
+      {cart.length === 0 ? (
+        <Typography>Корзина пуста</Typography>
       ) : (
-        <Box>
-          {cart.map((item) => (
-            <Box
-              key={item.id}
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              mb={2}
-              p={2}
-              border="1px solid #ddd"
-              borderRadius={2}
-            >
-              <Typography variant="body1">{item.name}</Typography>
-              <Box display="flex" alignItems="center" gap={1}>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                  disabled={item.quantity <= 1}
-                >
-                  -
-                </Button>
-                <Typography>{item.quantity}</Typography>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                >
-                  +
-                </Button>
-                <IconButton onClick={() => handleRemove(item.id)}>
-                  <DeleteIcon />
-                </IconButton>
-              </Box>
+        cart.map((item) => (
+          <Box
+            key={item.productId || item.id}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: 2,
+              borderBottom: "1px solid #ccc",
+            }}
+          >
+            <Typography sx={{ flex: 1 }}>{item.name}</Typography>
+            <Typography sx={{ flex: 1, textAlign: "center" }}>
+              {item.price ? `${item.price} ₽` : "Цена не указана"}
+            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Button
+                sx={{ minWidth: 40 }}
+                onClick={() => handleUpdateQuantity(item.productId, item.quantity - 1)}
+              >
+                -
+              </Button>
+              <Typography component="span" sx={{ mx: 2 }}>{item.quantity}</Typography>
+              <Button
+                sx={{ minWidth: 40 }}
+                onClick={() => handleUpdateQuantity(item.productId, item.quantity + 1)}
+              >
+                +
+              </Button>
             </Box>
-          ))}
-          <Button variant="contained" color="primary" fullWidth sx={{ mt: 3 }}>
-            Proceed to Checkout
-          </Button>
-        </Box>
+            <IconButton onClick={() => handleRemoveItem(item.productId)} color="error">
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        ))        
+      )}
+      {cart.length > 0 && (
+        <Button variant="contained" color="primary" sx={{ marginTop: 3 }}>
+          Оформить заказ
+        </Button>
       )}
     </Box>
   );

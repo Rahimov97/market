@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { User } from "../../models/User";
 import { generateToken } from "./utils";
-import CustomError from "../../../../errorHandler";
+import CustomError from "../../utils/errorHandler";
 import { Role } from "../../models/Role";
 
 export const loginBuyer = async (req: Request, res: Response, next: NextFunction) => {

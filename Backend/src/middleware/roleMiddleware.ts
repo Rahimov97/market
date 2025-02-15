@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { Admin } from "../models/Admin";
 import { Role } from "../models/Role";
 import { Permission } from "../models/Permission";
-import CustomError from "../../../errorHandler";
+import CustomError from "../utils/errorHandler";
 import mongoose from "mongoose";
 
 interface PermissionCheckOptions {

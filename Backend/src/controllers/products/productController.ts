@@ -13,12 +13,10 @@ import { Product, IProduct } from "../../models/Product";
 import mongoose from "mongoose";
 import { Category } from "../../models/Category";
 
-// Создать товар
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, category, description, price, stock, image, attributes } = req.body;
 
-    // Проверка авторизованного пользователя
     const sellerId = req.user?.id;
     if (!sellerId) {
       throw new CustomError("Не удалось определить продавца", 400);
@@ -269,7 +267,6 @@ export const getProductForSeller = async (req: Request, res: Response, next: Nex
   }
 };
 
-// Получить список товаров
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {
@@ -285,7 +282,6 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
 
     const query: Record<string, any> = {};
 
-    // Обработка категории
     if (category) {
       const categoryDoc = mongoose.isValidObjectId(category)
         ? await Category.findById(category)
@@ -298,10 +294,8 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
       console.log("Фильтрация по категории:", categoryDoc);
     }
 
-    // Фильтрация по статусу
     if (status) query.status = status;
 
-    // Фильтрация по цене
     if (minPrice || maxPrice) {
       query["offers.price"] = {};
       if (minPrice) query["offers.price"].$gte = parseFloat(minPrice as string);

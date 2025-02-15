@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, Toolbar, Box, Typography, Button } from "@mui/material";
+import { AppBar, Toolbar, Box, Typography, Button, Badge } from "@mui/material";
 import Logo from "./components/Logo";
 import CategoryMenu from "./components/CategoryMenu";
 import SearchBar from "./components/SearchBar";
@@ -8,10 +8,12 @@ import FavoritesIcon from "./components/Icons/FavoritesIcon";
 import CartIcon from "./components/Icons/CartIcon";
 import ProfileIcon from "./components/Icons/ProfileIcon";
 import { useAuthContext } from "@/context/AuthContext";
+import { useCart } from "@/features/Buyer/hooks/useCart";
 import { useNavigate } from "react-router-dom";
 
 const Header: React.FC = () => {
   const { isAuthenticated } = useAuthContext();
+  const { cart } = useCart();
   const navigate = useNavigate();
 
   const icons = [
@@ -74,15 +76,21 @@ const Header: React.FC = () => {
               </Typography>
             </Box>
           ))}
-
+          
           <Box
             display="flex"
             flexDirection="column"
             alignItems="center"
             onClick={handleCartClick}
-            sx={{ cursor: "pointer" }}
+            sx={{ cursor: "pointer", position: "relative" }}
           >
-            <CartIcon />
+            <Badge
+              badgeContent={cart.length}
+              color="primary"
+              sx={{ "& .MuiBadge-badge": { fontSize: "12px" } }}
+            >
+              <CartIcon />
+            </Badge>
             <Typography
               variant="caption"
               sx={{ color: "#888", fontSize: "12px" }}
@@ -96,11 +104,7 @@ const Header: React.FC = () => {
           ) : (
             <Button
               variant="contained"
-              onClick={() => {
-                if (!isAuthenticated) {
-                  navigate("/auth", { replace: true });
-                }
-              }}
+              onClick={() => navigate("/auth", { replace: true })}
               sx={{
                 backgroundColor: "#007BFF",
                 color: "#fff",

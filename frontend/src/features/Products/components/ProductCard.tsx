@@ -3,33 +3,29 @@ import { Box, Typography, IconButton, Button } from "@mui/material";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useFavorite } from "@/features/Products/hooks/useFavorite";
-import { useCart } from "@/features/Buyer/hooks/useCart"; // Импортируем хук для корзины
+import { useCart } from "@/features/Buyer/hooks/useCart";
 
 interface ProductCardProps {
-  id: string; // Добавляем ID для работы с корзиной
+  id: string;
+  sellerId: string;
   image?: string;
   name: string;
   price: number;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ id, image, name, price }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ id, sellerId, image, name, price }) => {
   const { isFavorite, toggleFavorite, isAnimating } = useFavorite();
-  const { addItemToCart } = useCart(); // Используем метод добавления в корзину
+  const { addItemToCart, isItemInCart } = useCart();
 
-  const placeholderImage = "https://via.placeholder.com/220x180?text=No+Image";
+  const placeholderImage = "https://placehold.co/220x180?text=No+Image";
 
   const handleAddToCart = () => {
-    if (!id) {
-      console.error("ProductCard error: Product ID is undefined or null.");
+    if (!id || !sellerId || !price) {
+      console.error("Ошибка: ID товара, ID продавца или цена отсутствует.");
       return;
     }
-    addItemToCart(id, 1); // Добавляем один товар в корзину
+    addItemToCart(id, sellerId, price, 1); 
   };
-
-  if (!id) {
-    console.error("ProductCard rendered without a valid id.");
-    return <div>Error: Product data is invalid.</div>;
-  }
 
   return (
     <Box
@@ -43,7 +39,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, image, name, price }) => 
         position: "relative",
       }}
     >
-      {/* Картинка товара */}
       <Box
         component="img"
         src={image || placeholderImage}
@@ -56,9 +51,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, image, name, price }) => 
         }}
       />
 
-      {/* Иконка "Избранное" */}
       <IconButton
-        onClick={toggleFavorite}
+        onClick={() => toggleFavorite()}
         disableRipple
         sx={{
           position: "absolute",
@@ -72,7 +66,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, image, name, price }) => 
         {isFavorite ? <FavoriteIcon sx={{ fontSize: 24 }} /> : <FavoriteBorderOutlinedIcon sx={{ fontSize: 24 }} />}
       </IconButton>
 
-      {/* Информация о товаре */}
       <Box sx={{ padding: "8px", textAlign: "left" }}>
         <Typography
           variant="body2"
@@ -86,20 +79,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, image, name, price }) => 
           }}
           title={name}
         >
-          {name.length > 50 ? `${name.slice(0, 50)}...` : name}
+          {name}
         </Typography>
+
         <Typography variant="h6" sx={{ color: "#d32f2f", fontWeight: "bold", marginTop: "4px" }}>
           {price}₽
         </Typography>
 
-        {/* Кнопка добавления в корзину */}
         <Button
           variant="contained"
           color="primary"
           onClick={handleAddToCart}
           sx={{ marginTop: "8px", textTransform: "none" }}
+          disabled={isItemInCart(id)}
         >
-          Добавить в корзину
+          {isItemInCart(id) ? "В корзине" : "Добавить в корзину"}
         </Button>
       </Box>
     </Box>

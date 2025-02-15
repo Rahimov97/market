@@ -68,6 +68,7 @@ const SearchResultsPage: React.FC = () => {
           <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
             <ProductCard
               name={product.name}
+              sellerId={product.offers[0]?.seller || ""}
               price={product.offers[0]?.price || 0}
               image={product.image}
             />

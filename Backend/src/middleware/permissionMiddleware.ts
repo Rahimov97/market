@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Admin } from "../models/Admin";
 import { Permission } from "../models/Permission";
-import CustomError from "../../../errorHandler";
+import CustomError from "../utils/errorHandler";
 
 /**
  * Middleware для проверки разрешений.

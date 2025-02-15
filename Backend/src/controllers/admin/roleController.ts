@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Role } from "../../models/Role";
-import CustomError from "../../../../errorHandler";
+import CustomError from "../../utils/errorHandler";
 
 /**
  * Middleware для проверки роли пользователя

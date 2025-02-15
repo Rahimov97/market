@@ -8,10 +8,10 @@ import {
 
 interface CartItem {
   id: string;
+  productId: string;
   name: string;
   price: number;
   quantity: number;
-  // Добавьте любые другие поля, которые есть в товаре корзины
 }
 
 export const useCart = () => {
@@ -22,24 +22,48 @@ export const useCart = () => {
   const fetchCart = async () => {
     try {
       setLoading(true);
-      setError(null); // Очистка ошибок перед новым запросом
+      setError(null);
       const data = await getCart();
-      setCart(data.items || []);
+
+      if (!data || !Array.isArray(data)) {
+        throw new Error("Некорректный формат данных корзины");
+      }
+
+      setCart(
+        data.map((item) => ({
+          id: item.id,
+          productId: item.productId || item.id,
+          name: item.name,
+          price: item.subtotal / item.quantity,
+          quantity: item.quantity,
+        }))
+      );
     } catch (err: any) {
-      setError(err.message || "Failed to fetch cart");
+      setError(err.message || "Ошибка загрузки корзины");
+      setCart([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const addItemToCart = async (productId: string, quantity: number) => {
+  const isItemInCart = (productId: string) => {
+    return cart.some((item) => item.productId === productId);
+  };
+
+  const addItemToCart = async (productId: string, sellerId: string, price: number, quantity: number) => {
     try {
       setLoading(true);
       setError(null);
-      await addToCart(productId, quantity);
-      await fetchCart(); // Обновляем корзину после добавления
+  
+      if (isItemInCart(productId)) {
+        await updateItemQuantity(productId, quantity);
+      } else {
+        await addToCart(productId, sellerId, price, quantity); 
+      }
+  
+      await fetchCart();
     } catch (err: any) {
-      setError(err.message || "Failed to add item to cart");
+      setError(err.message || "Ошибка добавления товара в корзину");
     } finally {
       setLoading(false);
     }
@@ -50,25 +74,32 @@ export const useCart = () => {
       setLoading(true);
       setError(null);
       await removeFromCart(productId);
-      await fetchCart(); // Обновляем корзину после удаления
+      setCart((prev) => prev.filter((item) => item.productId !== productId));
     } catch (err: any) {
-      setError(err.message || "Failed to remove item from cart");
+      setError(err.message || "Ошибка удаления товара из корзины");
     } finally {
       setLoading(false);
     }
   };
 
   const updateItemQuantity = async (productId: string, quantity: number) => {
+    if (quantity < 1) {
+      await removeItemFromCart(productId);
+      return;
+    }
+
     try {
-      console.log("Calling updateCartQuantity:", { productId, quantity });
       await updateCartQuantity(productId, quantity);
-      await fetchCart(); // Обновляем корзину после изменения количества
+      setCart((prev) =>
+        prev.map((item) =>
+          item.productId === productId ? { ...item, quantity } : item
+        )
+      );
     } catch (err: any) {
-      console.error("Error updating quantity:", err.response?.data || err.message);
-      setError(err.message || "Failed to update cart quantity");
+      setError(err.message || "Ошибка обновления количества товара");
     }
   };
-  
+
   useEffect(() => {
     fetchCart();
   }, []);
@@ -80,5 +111,6 @@ export const useCart = () => {
     addItemToCart,
     removeItemFromCart,
     updateItemQuantity,
+    isItemInCart,
   };
 };

@@ -1,5 +1,5 @@
 import { User } from "../../models/User";
-import CustomError from "../../../../errorHandler";
+import CustomError from "../../utils/errorHandler";
 import mongoose from "mongoose";
 
 // Проверка роли пользователя

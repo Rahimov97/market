@@ -3,19 +3,19 @@ import { Box } from '@mui/material';
 
 const banners = [
   {
-    img: 'https://via.placeholder.com/720x300/FFDD2D/000000?text=Banner+1',
+    img: 'https://placehold.co/720x300/FFDD2D/000000?text=Banner+1',
   },
   {
-    img: 'https://via.placeholder.com/720x300/FF5733/FFFFFF?text=Banner+2',
+    img: 'https://placehold.co/720x300/FF5733/FFFFFF?text=Banner+2',
   },
   {
-    img: 'https://via.placeholder.com/720x300/337AFF/FFFFFF?text=Banner+3',
+    img: 'https://placehold.co/720x300/337AFF/FFFFFF?text=Banner+3',
   },
   {
-    img: 'https://via.placeholder.com/720x300/FF33FF/FFFFFF?text=Banner+4',
+    img: 'https://placehold.co/720x300/FF33FF/FFFFFF?text=Banner+4',
   },
   {
-    img: 'https://via.placeholder.com/720x300/33FF33/000000?text=Banner+5',
+    img: 'https://placehold.co/720x300/33FF33/000000?text=Banner+5',
   },
 ];
 

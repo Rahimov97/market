@@ -1,6 +1,6 @@
 import { Product } from "../../models/Product";
 import mongoose, { Types } from "mongoose";
-import CustomError from "../../../../errorHandler";
+import CustomError from "../../utils/errorHandler";
 
 // Типизация для фильтрации продуктов
 interface ProductFilterParams {

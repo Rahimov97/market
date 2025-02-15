@@ -1,5 +1,5 @@
 import { User, IUser } from "../../models/User"; 
-import CustomError from "../../../../errorHandler";
+import CustomError from "../../utils/errorHandler";
 
 // Получение профиля пользователя
 export const getProfile = async (userId: string): Promise<IUser> => {

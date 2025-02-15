@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { User } from "../../models/User";
 import { Role } from "../../models/Role";
 import { generateToken } from "./utils";
-import CustomError from "../../../../errorHandler";
+import CustomError from "../../utils/errorHandler";
 
 export const registerBuyer = async (req: Request, res: Response, next: NextFunction) => {
   try {

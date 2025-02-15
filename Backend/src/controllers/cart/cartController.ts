@@ -2,10 +2,8 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { addToCart, getCart, updateCartItemQuantity, removeCartItem } from "../../services/cart/cartService";
 
-// Helper function to validate ObjectId
 const validateObjectId = (id: string): boolean => mongoose.Types.ObjectId.isValid(id);
 
-// Helper function to handle unauthorized access
 const ensureUserExists = (req: Request, res: Response): string | null => {
   if (!req.user) {
     res.status(401).json({ message: "Unauthorized: User not found in request." });
@@ -14,7 +12,6 @@ const ensureUserExists = (req: Request, res: Response): string | null => {
   return req.user.id;
 };
 
-// Helper function to send error responses
 const respondWithError = (res: Response, status: number, message: string, details?: any) => {
   res.status(status).json({ message, ...(details && { details }) });
 };
@@ -26,6 +23,10 @@ export const addToCartController = async (req: Request, res: Response): Promise<
 
     const { productId, quantity, priceAtAddition, sellerId, options } = req.body;
 
+    if (!productId || !sellerId || typeof quantity !== "number") {
+      return respondWithError(res, 400, "Missing required fields: productId, sellerId, or quantity.");
+    }
+
     if (!validateObjectId(productId) || !validateObjectId(sellerId)) {
       return respondWithError(res, 400, "Invalid product ID or seller ID format.");
     }
@@ -34,16 +35,17 @@ export const addToCartController = async (req: Request, res: Response): Promise<
       userId,
       new mongoose.Types.ObjectId(productId),
       quantity,
-      priceAtAddition,
+      priceAtAddition || 0, 
       new mongoose.Types.ObjectId(sellerId),
-      options
+      options || new Map() 
     );
+
     res.status(200).json(cart);
   } catch (error) {
     console.error("Error in addToCartController:", error);
-    respondWithError(res, 500, "Error adding to cart", { error });
   }
 };
+
 
 export const getCartController = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -65,6 +67,10 @@ export const updateCartController = async (req: Request, res: Response): Promise
 
     const { productId, quantity } = req.body;
 
+    if (!productId || typeof quantity !== "number") {
+      return respondWithError(res, 400, "Missing required fields: productId or quantity.");
+    }
+
     if (!validateObjectId(productId)) {
       return respondWithError(res, 400, `Invalid product ID format: '${productId}'.`);
     }
@@ -79,9 +85,9 @@ export const updateCartController = async (req: Request, res: Response): Promise
     res.status(200).json(updatedCart);
   } catch (error) {
     console.error("Error in updateCartController:", error);
-    respondWithError(res, 500, "Error updating cart item", { error });
   }
 };
+
 
 export const removeFromCartController = async (req: Request, res: Response): Promise<void> => {
   try {
